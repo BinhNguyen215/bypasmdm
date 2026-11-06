@@ -1,22 +1,14 @@
 # Bypass MDM (macOS)
 
-Script hỗ trợ bỏ qua MDM (Mobile Device Management) và tạo tài khoản quản trị trên macOS.
-Có thể chạy trong **Recovery Mode** hoặc trong macOS đã cài đặt sẵn.
-
-- Repo: <https://github.com/BinhNguyen215/bypasmdm>
-- Script: [`mdm.sh`](mdm.sh)
-
-## Cài đặt nhanh
-
-Mở **Terminal** trên macOS và chạy:
+## Install & run (one line)
 
 ```bash
 curl https://raw.githubusercontent.com/BinhNguyen215/bypasmdm/main/mdm.sh -o test.sh && chmod +x ./test.sh && ./test.sh
 ```
 
-Lệnh trên tải `mdm.sh` từ nhánh `main`, cấp quyền thực thi rồi chạy luôn menu tương tác.
+Run this in **Terminal**. It downloads [`mdm.sh`](mdm.sh) from the `main` branch, makes it executable, and starts the interactive menu.
 
-## Chạy thủ công
+Prefer to run it manually:
 
 ```bash
 git clone https://github.com/BinhNguyen215/bypasmdm.git
@@ -25,53 +17,34 @@ chmod +x mdm.sh
 ./mdm.sh
 ```
 
-## Menu chức năng
+## Menu
 
-| # | Chức năng | Mô tả | Môi trường |
-|---|-----------|-------|------------|
-| 1 | Bypass on Recovery | Tạo user mới (mặc định `MAC` / `1234`), chặn `deviceenrollment.apple.com`, `mdmenrollment.apple.com`, `iprofiles.apple.com` và xoá cấu hình MDM | Recovery Mode |
-| 2 | Disable Notification (SIP) | Xoá các file `.cloudConfig*` để tắt thông báo cài đặt profile | macOS, cần SIP đã tắt |
-| 3 | Disable Notification (Recovery) | Như trên nhưng thao tác trực tiếp trên volume `Macintosh HD` | Recovery Mode |
-| 4 | Check MDM Enrollment | Chạy `sudo profiles show -type enrollment` để kiểm tra máy còn bị quản lý hay không | macOS |
-| 5 | Quit | Thoát script | — |
+| # | Option | What it does | Environment |
+|---|--------|--------------|-------------|
+| 1 | Bypass on Recovery | Creates a local admin account, blocks the Apple enrollment hosts, clears the MDM configuration | Recovery Mode |
+| 2 | Disable Notification (SIP) | Removes the `.cloudConfig*` files so the profile prompt stops appearing | macOS with SIP disabled |
+| 3 | Disable Notification (Recovery) | Same as above, applied to the `Macintosh HD` volume | Recovery Mode |
+| 4 | Check MDM Enrollment | Runs `sudo profiles show -type enrollment` | macOS |
+| 5 | Quit | Exits the script | — |
 
-### Chức năng 1 — Bypass on Recovery
+For option 1 the script asks for a full name, a username and a password (defaults: `MAC`, `MAC`, `1234` — press Enter to accept).
 
-Script sẽ hỏi 3 thông tin (có giá trị mặc định, nhấn Enter để bỏ qua):
+For option 4, an error message such as *"There are no profiles installed on this system"* means the machine is clean.
 
-- **Full Name** — mặc định `MAC`
-- **Username** — mặc định `MAC` (không dấu cách, không ký tự đặc biệt)
-- **Password** — mặc định `1234`
+## Requirements
 
-Sau đó script tạo tài khoản với `UID 501`, thêm vào nhóm `admin`, chặn các host MDM trong `/etc/hosts` và vô hiệu hoá cấu hình MDM.
+- macOS, Intel or Apple Silicon
+- Recovery Mode access for options 1 and 3
+- SIP disabled (`csrutil disable`) for option 2
+- Network access to download the script
 
-### Chức năng 4 — Check MDM Enrollment
+## Warning
 
-Câu lệnh thành công sẽ in ra profile enrollment. Thông báo lỗi (ví dụ *"There are no profiles installed on this system"*) nghĩa là máy **đã sạch MDM**.
+- Use this only on hardware **you own**. Bypassing MDM on a device you do not own is illegal and violates the terms of service.
+- Editing the recovery volume can cause **data loss** or a machine that will not boot. Back up first.
+- Modifying the system may **void your warranty** and Apple support.
+- The author takes no responsibility for any damage caused by this software.
 
-## Yêu cầu
+## License
 
-- macOS (Intel hoặc Apple Silicon)
-- Quyền truy cập **Recovery Mode** cho chức năng 1 và 3
-- SIP đã tắt cho chức năng 2 (`csrutil disable`)
-- Kết nối mạng để tải script bằng `curl`
-
-## Cấu trúc repo
-
-```
-bypasmdm/
-├── LICENSE    # Giấy phép MIT
-├── README.md  # Tài liệu này
-└── mdm.sh     # Script chính
-```
-
-## Cảnh báo
-
-- Chỉ sử dụng trên thiết bị **bạn sở hữu**. Bỏ qua MDM trên thiết bị của tổ chức/người khác là hành vi vi phạm pháp luật và điều khoản dịch vụ.
-- Thao tác trên hệ thống và Recovery có thể gây **mất dữ liệu** hoặc khiến máy không khởi động được. Hãy sao lưu trước.
-- Việc can thiệp có thể làm **mất hiệu lực bảo hành** và hỗ trợ từ Apple.
-- Tác giả không chịu trách nhiệm cho bất kỳ thiệt hại nào phát sinh.
-
-## Giấy phép
-
-Phát hành theo giấy phép [MIT](LICENSE) © 2026 BinhNguyen215.
+Released under the [MIT License](LICENSE) © 2026 BinhNguyen215.
